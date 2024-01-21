@@ -1,70 +1,107 @@
 
-// allows us to take user input using the prompt module
+/* calling prompt-sync to get a prompting function
+  sigint allows users to exit the program using Ctrl + C */
+
 const prompt = require('prompt-sync')({sigint: true});
 
 // object array containing all available items in the store
-let items = [
+
+let products = [
     {
-      name: "Tv",
-      price: 3550
+      name: "suit",
+      price: 850,
     },
     {
-      name: "Fridge",
-      price: 4500,
+      name: "shorts",
+      price: 100,
     },
     {
-      name: "Phone",
-      price: 550,      
+      name: "dress",
+      price: 350,      
     },
     {
-      name: "Shoe",
+      name: "hoodie",
       price: 200,      
     },
     {
-      name: "Shirt",
+      name: "skirt",
       price: 170,      
     }   
   ];
 
-// first prompt asks for the visitors name
+// function to display store products 
+
+function displayProducts(products) {
+  console.log('Here are the products in stock:');
+  products.forEach((product) => {
+  console.log(`${product.name} - $${product.price}`);
+  });
+  console.log(`\n`)
+
+}
+
+// function to display cart
+
+function displayCart(myCart) {
+  console.log(`\nHere are the products in your cart:\n`);
+  myCart.forEach((product) => {
+  console.log(`${product.name} - $${product.price}`);
+  });
+}
+
+// function to generate invoice
+
+function invoice(myCart) {
+  let total = 0;
+  myCart.forEach(myCart => {
+    total += myCart.price;
+  });
+
+  console.log(`\nTotal: $${total}\n**********\nThanks For Your Patronage!\nGoodbye!\n**********
+  `);
+}
+
+// create an empty variable for storing products on the cart
+
+let myCart = [];
+
+// asks for the user's name
 
 const name = prompt('Hey, what is your name? ');
+console.log(`Welcome ${name} to my store\n `);
 
-console.log(
-`Hello ${name}, welcome to my store.
-Here are the available items and their prices:
+displayProducts(products);
 
-Tv - 3550
-Fridge - 1700
-Phone - 550
-Shoe - 200
-Shirt - 170`
+// takes input from the prompt, converts to lower case and stores it in the selection variable
 
-);
+let selection = prompt('Type the product name to add to your cart: ').toLowerCase();
 
-let cart = [];
+// block of code in the loop runs till the user decides to checkout
 
-// this prompt stores the user input in the selection variable
-let selection = prompt('Type the name of any store item to add to your cart: ');
- 
-// the some method returns a boolean value if the user input matches any shop item    
-while (selection !== 'no') {
-  let match = items.some(function(item) {
-      return item.name === selection;
-    });
+while (selection !== 'invoice') {
 
-// if there is a match the item is added to the cart
-  if (match) {
-    console.log(`${selection} added to cart!\n`)
-    cart.push(selection);
-    selection = prompt(`Type item name to add another item, type no to proceed to checkout: ` );
+  // stores the matching products in variable
 
-// if not a message is displayed on the console 
+  const product = products.find((product) => product.name === selection);
+
+  // stores the match in the myCart variable and displays a message and the current cart
+
+  if (product) {
+    myCart.push(product);
+    console.log(`${product.name} added to cart!`);
+    displayCart(myCart);
+    console.log('\n')
+
+    /* displays a message on the console if there's no match and prompts the user
+    to add another item or checkout */
+
   } else {
-    console.log(`Item not available!\n`);
-    selection = prompt(`Type item name to add another item, type no to proceed to checkout: ` );
+    console.log(`Product not found!\n`);
   }
+    selection = prompt('Add another product name or type invoice to proceed to checkout: ' ).toLowerCase();
 }   
 
-// displays the items on the user's cart 
-console.log(cart);     
+// these functions displays the user's cart and total sum
+
+displayCart(myCart);
+invoice(myCart);
